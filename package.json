@@ -1,0 +1,11 @@
+{
+  "name": "QuestionBuilder",
+  "description": "A React.js component for building user questions",
+  "version": "1.0.0",
+  "author": "Andre Joseph <tech3@jobline.com.sg>",
+  "license": "MIT"
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+}

@@ -1,0 +1,171 @@
+html { box-sizing: border-box;  }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica Neue';
+  font-size: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+input {
+  padding: 3px;
+}
+
+.questionnaire {
+/*  border: 1px solid purple;*/
+  width: 750px;
+  height: 100%;
+}
+
+.question_container {
+/*  border: 1px solid blue;*/
+  width: 750px;
+  margin: 5;
+  padding: 10;
+  list-style-type: none;
+  height: 100%;
+}
+
+.add-question {
+/*  border: 1px solid red;*/
+  height: 100%;
+}
+
+.list-question {
+/*  border: 1px solid grey;*/
+  margin-top: 10px;
+  height: 100%;
+}
+
+.question_view {
+/* border: 1px solid red;*/
+ margin: 0;
+ padding: 0;
+ padding-top: 5px;
+}
+
+.question_view table tbody tr td {
+/*  border: 1px solid green;*/
+  vertical-align: top;
+}
+
+.question_view ul {
+  list-style-type: none;
+}
+
+.question_view ul li {
+  list-style-type: none;
+}
+
+.question_label {
+/*  border: 1px solid blue;*/
+/*  vertical-align:middle !important;*/
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+  width: 150px;
+  height: 100%;
+}
+
+.question_label h4, div small {
+  margin-top: 0px;
+  padding: 5px;
+}
+
+.question_label div small {
+  color: green;
+}
+
+.question_fields {
+  float: right;
+  padding: 5px;
+}
+
+.question_fields .question_functions {
+ margin-top: 2px;
+ margin-bottom: 5px;
+}
+
+.questionnaire .save_button {
+  margin-right: 50px;
+  float: right;
+}
+
+.btn-group {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-group > .btn {
+  position: relative;
+  float: left;
+}
+
+.btn-group > .btn:first-child:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group > .btn:last-child:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-group > .btn:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.btn-group .btn+.btn {
+  margin-left: -1px;
+}
+
+.btn-group > .btn:first-child {
+  margin-left: 0;
+}
+
+button,
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Helvetica Neue';
+  outline: none;
+}
+
+.btn:hover,
+.btn.current {
+  background-color: #eee;
+}
+
+.choice-count {
+  width: 70px;
+}
+
+.choices ul {
+  list-style: none;
+  padding: 0;
+}
+
+.choices-list li {
+  padding: 5px;
+}
