@@ -213,15 +213,13 @@ var SegmentedControl = React.createClass({
 });
 
 var QuestionList = React.createClass({
+  // Eveytime you go into a function, the scope and context changes, thus the `this` also changes...
   removeItem: function(questionItem) {
-    // Eveytime you go into a function, the scope and context changes, thus the `this` also changes...
     var questionItems = this.props.questionItems,
         index = questionItems.indexOf(questionItem);
-
     if (index !== -1) {
       questionItems.splice(index, 1);
     }
-
     this.setState({ questionItems: questionItems });
   },
 
@@ -290,6 +288,19 @@ var AddQuestion = React.createClass({
   }
 });
 
+var SaveTemplate = React.createClass({
+  _saveQuestionair: function() {
+    alert("This will save the Template Builder");
+  },
+
+  render: function() {
+    console.log('Save this Array : ' + this.props.questionItems);
+    return <div className="save_button">
+      <button onClick={this._saveQuestionair}> Save </button>
+    </div>
+  }
+});
+
 
 var QuestionBuilder = React.createClass({
   getInitialState: function() {
@@ -306,11 +317,20 @@ var QuestionBuilder = React.createClass({
   },
 
   render: function() {
-    return <div className="questionnaire">
-      <h3> Template Library :: Information Required (Server) </h3>
-      <AddQuestion addNew={this._addQuestion} />
-      <QuestionList questionItems={this.state.questionItems} />
-    </div>
+    if (this.state.questionItems.length > 0) {
+      saveButton = <SaveTemplate questionItems={this.state.questionItems} />
+    } else {
+      saveButton = ''
+    }
+
+    return (
+      <div className="questionnaire">
+        <h3> Template Library :: Information Required (Server) </h3>
+        <AddQuestion addNew={this._addQuestion} />
+        <QuestionList questionItems={this.state.questionItems} />
+
+      </div>
+    )
   }
 });
 
