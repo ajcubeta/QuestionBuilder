@@ -1,5 +1,4 @@
 //  http://tylermcginnis.com/reactjs-tutorial-a-comprehensive-guide-to-building-apps-with-react/
-
 var TextChoice = React.createClass({
   getInitialState: function(){
     return {
@@ -139,7 +138,7 @@ var SegmentedControl = React.createClass({
       questionItem: this.props.questionItem,
       questionTypes: ['Text', 'Multiple Choice', 'Single Choice', 'Open Ended'],
       numOfChoices: 4,
-      isFavorite: false,
+      // isFavorite: false,
       currentSegment: 'Text',
       multipleChoiceQuestions: [],
       radioQuestions: [],
@@ -159,14 +158,14 @@ var SegmentedControl = React.createClass({
   //   this.setState({ questionItems: questionItems });
   // },
 
-  setFavorite: function(event) {
-    this.setState({
-      isFavorite: !this.state.isFavorite
-    });
-
-    var likes = !this.state.isFavorite ? 'liked' : 'unliked'
-    alert('You ' + likes + ' this Favorite question.');
-  },
+  // setFavorite: function(event) {
+  //   this.setState({
+  //     isFavorite: !this.state.isFavorite
+  //   });
+  //
+  //   var likes = !this.state.isFavorite ? 'liked' : 'unliked'
+  //   alert('You ' + likes + ' this Favorite question.');
+  // },
 
   segmentValueChanged: function(label) {
     this.setState({
@@ -193,84 +192,80 @@ var SegmentedControl = React.createClass({
   },
 
   render: function() {
-    // console.log(Object.keys(this.props.questionItems))
     return <div>
-      <div className="question_fields">
-        <div className="question_textarea">
-          <textarea rows="4" cols="60" placeholder="Ask Anything for candidates..." autofocus></textarea>
-        </div>
-        <div className="question_functions">
-          <span>
-            <RemoveQuestion questionItems={this.state.questionItems} questionItem={this.state.questionItem}  removeQuestionItem={this._removeQuestionItem} />
-          </span>&nbsp;
-          <span>
-            <button className={'btn' + (this.state.isFavorite == true ? ' current' : '')}
-              onClick={this.setFavorite}> <u>&#x02605;</u> <small>Favorite</small>
+      <div className="btn-group">
+        <input className="btn choice-count" type="number" min="1" name="numOfChoices" onChange={this.setNumOfChoices} value={this.state.numOfChoices} />
+        { this.state.questionTypes.map(function(label, idx) {
+          return (
+            <button className={'btn' + (this.state.currentSegment == label ? ' current' : '')} type="button" key={'btn' + idx}
+              onClick={this.segmentValueChanged.bind(this, label)}>{ label }
             </button>
-          </span>
-        </div>
-        <div className="btn-group">
-          <input className="btn choice-count" type="number" min="1" name="numOfChoices" onChange={this.setNumOfChoices} value={this.state.numOfChoices} />
-
-          { this.state.questionTypes.map(function(label, idx) {
-            return (
-              <button className={'btn' + (this.state.currentSegment == label ? ' current' : '')} type="button" key={'btn' + idx}
-                onClick={this.segmentValueChanged.bind(this, label)}>{ label }
-              </button>
-            );
-          }.bind(this)) }
-
-        </div>
-        <div className="choices">
-          { /* The parent has to keep track of the Choice state */ }
-          { this.currentSegment() }
-        </div>
+          );
+        }.bind(this)) }
 
       </div>
-    </div>;
-  }
-});
-
-var QuestionItem = React.createClass({
-  render: function() {
-    return (
-      <div className="question_label">
-        <h4>
-          <span><b>Question</b> </span>
-          <span>{this.props.questionItem}:</span>
-        </h4>
-        <div><small> Malisa Lim </small></div>
-        <div><small> 5 months ago </small></div>
+      <div className="choices">
+        { /* The parent has to keep track of the Choice state */ }
+        { this.currentSegment() }
       </div>
-    );
+    </div>
   }
 });
 
 var QuestionList = React.createClass({
+  removeItem: function(questionItem) {
+    // Eveytime you go into a function, the scope and context changes, thus the `this` also changes...
+    var questionItems = this.props.questionItems,
+        index = questionItems.indexOf(questionItem);
+
+    if (index !== -1) {
+      questionItems.splice(index, 1);
+    }
+
+    this.setState({ questionItems: questionItems });
+  },
+
   render: function() {
-    var questionItems = this.props.questionItems;
+    var questionsNode = _(this.props.questionItems).map(function(questionItem, idx) {
+        return (
+          <li className="list-question" key={idx}>
+            <div className="question_fields">
+              <table>
+                <tr>
+                  <td>
+                    {questionItem} &nbsp; {idx + 1} &nbsp;
+                  </td>
+                  <td>
+                    <div className="question_textarea">
+                      <textarea rows="4" cols="60" placeholder="Ask Anything for candidates..." autofocus></textarea>
+                    </div>
+                    <div className="question_functions">
+                      <span>
+                        <button onClick={this.removeItem.bind(this, questionItem)} className={'btn'} type="button" key={'btn' + idx}> <u>x</u> <small>Remove</small> </button>
+                      </span>&nbsp;
+                      <span>
+                        <button className={'btn'}
+                          onClick={this.setFavorite}> <u>&#x02605;</u> <small>Favorite</small>
+                        </button>
+                      </span>
+                    </div>
+                    <SegmentedControl questionItem={questionItem} />
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </li>
+        );
+      }.bind(this))
 
     return (
       <ul className="question_container">
-        { _(questionItems).map(function(questionItem, idx) {
-          return (
-            <li className="list-question" key={idx}>
-              <div className="question_view">
-                <table>
-                  <tr>
-                    <td><QuestionItem questionItem={idx + 1} /></td>
-                    <td><SegmentedControl questionItems={questionItems} questionItem={questionItem} /></td>
-                  </tr>
-                </table>
-              </div>
-
-            </li>
-          );
-        }) }
+        { questionsNode }
       </ul>
     );
   }
 });
+
 
 var AddQuestion = React.createClass({
   getInitialState: function(){
@@ -295,46 +290,6 @@ var AddQuestion = React.createClass({
   }
 });
 
-var RemoveQuestion = React.createClass({
-  getInitialState: function() {
-    return {
-      questionItems: this.props.questionItems,
-    }
-  },
-
-  _removeQuestionItem: function() {
-    var questionItems = this.props.questionItems,
-        questionItem = this.props.questionItem,
-        index = questionItems.indexOf(questionItem);
-
-    console.log('QuestionItem(s): ' + questionItems)
-    // console.log('QuestionItem is ' + questionItem + ' ==+== index is ' + index );
-    if (index !== -1) {
-      questionItems.splice(index, 1);
-      console.log('QuestionItems is now : ' + questionItems)
-    }
-    this.setState({ questionItems: questionItems });
-  },
-
-  render: function() {
-    return <button type="button" onClick={this._removeQuestionItem}>
-      <u>x</u> <small>Remove</small>
-    </button>
-  }
-});
-
-var SaveTemplate = React.createClass({
-  _saveQuestionair: function() {
-    alert("This will save the Template Builder");
-  },
-
-  render: function() {
-    console.log('Save this Array : ' + this.props.questionItems);
-    return <div className="save_button">
-      <button onClick={this._saveQuestionair}> Save </button>
-    </div>
-  }
-});
 
 var QuestionBuilder = React.createClass({
   getInitialState: function() {
@@ -350,29 +305,11 @@ var QuestionBuilder = React.createClass({
     });
   },
 
-  // _removeQuestionItem: function(questionItem) {
-  //   var questionItems = this.state.questionItems,
-  //       index = questionItems.indexOf(questionItem);
-  //
-  //   if (index !== -1) {
-  //     questionItems.splice(index, 1);
-  //   }
-  //
-  //   this.setState({ questionItems: questionItems });
-  // },
-
   render: function() {
-    if (this.state.questionItems.length > 0) {
-      saveButton = <SaveTemplate questionItems={this.state.questionItems} />
-    } else {
-      saveButton = ''
-    }
-
     return <div className="questionnaire">
-      <h3> Template Library # Server Beginner Survey </h3>
+      <h3> Template Library :: Information Required (Server) </h3>
       <AddQuestion addNew={this._addQuestion} />
       <QuestionList questionItems={this.state.questionItems} />
-      { saveButton }
     </div>
   }
 });
