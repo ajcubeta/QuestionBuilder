@@ -7,9 +7,7 @@ var TextChoice = React.createClass({
   },
 
   render: function() {
-    return (
-      null
-    );
+    return ( null );
   }
 });
 
@@ -25,8 +23,7 @@ var MultipleChoice = React.createClass({
     }
   },
 
-  _addQuestion: function(event) {
-    console.log('Add question ' + event.target.value);
+  addQuestion: function(event) {
     this.props.store.push({value: event.target.value})
   },
 
@@ -213,6 +210,12 @@ var SegmentedControl = React.createClass({
 });
 
 var QuestionList = React.createClass({
+  getInitialState: function() {
+    return {
+      isFavorite: false
+    }
+  },
+
   // Eveytime you go into a function, the scope and context changes, thus the `this` also changes...
   removeItem: function(questionItem) {
     var questionItems = this.props.questionItems,
@@ -223,6 +226,14 @@ var QuestionList = React.createClass({
     this.setState({ questionItems: questionItems });
   },
 
+  setFavorite: function(questionItem) {
+    this.setState({
+      isFavorite: !this.state.isFavorite
+    });
+    // var likes = !this.state.isFavorite ? 'liked' : 'unliked'
+    // alert('You ' + likes + ' this Favorite question.');
+  },
+
   render: function() {
     var questionsNode = _(this.props.questionItems).map(function(questionItem, idx) {
         return (
@@ -230,20 +241,15 @@ var QuestionList = React.createClass({
             <div className="question_fields">
               <table>
                 <tr>
+                  <td>{questionItem} &nbsp; {idx + 1} &nbsp;</td>
                   <td>
-                    {questionItem} &nbsp; {idx + 1} &nbsp;
-                  </td>
-                  <td>
-                    <div className="question_textarea">
-                      <textarea rows="4" cols="60" placeholder="Ask Anything for candidates..." autofocus></textarea>
-                    </div>
+                    <div className="question_textarea"><textarea rows="4" cols="60" placeholder="Ask Anything for candidates..." autofocus></textarea></div>
                     <div className="question_functions">
+                      <span><button> <u>+</u> <small>Duplicate</small> </button></span>&nbsp;
+                      <span><button onClick={this.removeItem.bind(this, questionItem)} className={'btn'} type="button" key={'btn' + idx}> <u>x</u> <small>Remove</small> </button></span>&nbsp;
                       <span>
-                        <button onClick={this.removeItem.bind(this, questionItem)} className={'btn'} type="button" key={'btn' + idx}> <u>x</u> <small>Remove</small> </button>
-                      </span>&nbsp;
-                      <span>
-                        <button className={'btn'}
-                          onClick={this.setFavorite}> <u>&#x02605;</u> <small>Favorite</small>
+                        <button className={'btn' + (this.state.isFavorite == true ? ' current' : '')} onClick={this.setFavorite.bind(this, questionItem)}> <u>&#x02605;</u>
+                          <small>Favorite</small>
                         </button>
                       </span>
                     </div>
@@ -310,23 +316,23 @@ var QuestionBuilder = React.createClass({
     }
   },
 
-  _addQuestion: function(questionItem) {
+  addQuestion: function(questionItem) {
     this.setState({
       questionItems: this.state.questionItems.concat([questionItem])
     });
   },
 
   render: function() {
-    if (this.state.questionItems.length > 0) {
-      saveButton = <SaveTemplate questionItems={this.state.questionItems} />
-    } else {
+    if (this.state.questionItems.length == 0) {
       saveButton = ''
+    } else {
+      saveButton = <SaveTemplate questionItems={this.state.questionItems} />
     }
 
     return (
       <div className="questionnaire">
         <h3> Template Library :: Information Required (Server) </h3>
-        <AddQuestion addNew={this._addQuestion} />
+        <AddQuestion addNew={this.addQuestion} />
         <QuestionList questionItems={this.state.questionItems} />
 
       </div>
